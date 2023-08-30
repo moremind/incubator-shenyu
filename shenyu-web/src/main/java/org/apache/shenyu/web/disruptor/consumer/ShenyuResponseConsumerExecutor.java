@@ -22,8 +22,7 @@ import org.apache.shenyu.disruptor.consumer.QueueConsumerExecutor;
 import org.apache.shenyu.disruptor.consumer.QueueConsumerFactory;
 import org.springframework.http.HttpLogging;
 import reactor.core.publisher.Mono;
-
-import java.util.Objects;
+import reactor.netty.channel.AbortedException;
 
 public class ShenyuResponseConsumerExecutor<T extends Mono> extends QueueConsumerExecutor<T> {
 
@@ -32,11 +31,12 @@ public class ShenyuResponseConsumerExecutor<T extends Mono> extends QueueConsume
     @Override
     public void run() {
         LOGGER.info("send response...");
-        // consumer response Mono
-        if (Objects.nonNull(getData())) {
+        try {
+            // consumer response Mono
             getData().subscribe();
+        } catch (AbortedException e) {
+            // ignore AbortedException
         }
-        //getData().subscribe();
     }
     
     public static class ShenyuResponseConsumerExecutorFactory<T extends Mono> implements QueueConsumerFactory<T> {
