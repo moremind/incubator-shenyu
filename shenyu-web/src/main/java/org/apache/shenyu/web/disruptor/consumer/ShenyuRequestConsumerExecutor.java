@@ -20,6 +20,7 @@ package org.apache.shenyu.web.disruptor.consumer;
 import org.apache.commons.logging.Log;
 import org.apache.shenyu.disruptor.consumer.QueueConsumerExecutor;
 import org.apache.shenyu.disruptor.consumer.QueueConsumerFactory;
+import org.apache.shenyu.plugin.api.utils.SpringBeanUtils;
 import org.apache.shenyu.web.disruptor.ShenyuResponseEventPublisher;
 import org.apache.shenyu.web.handler.ShenyuWebHandler;
 import org.apache.shenyu.web.server.ShenyuRequestExchange;
@@ -27,6 +28,7 @@ import org.springframework.http.HttpLogging;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.function.Consumer;
 
 import static org.apache.shenyu.common.constant.Constants.RESPONSE_HANDLER_SEND_DISRUPTOR_WATCH;
@@ -37,22 +39,19 @@ public class ShenyuRequestConsumerExecutor<T extends ShenyuRequestExchange> exte
 
     private final ShenyuResponseEventPublisher shenyuResponseEventPublisher = ShenyuResponseEventPublisher.getInstance();
     
+    private final ThreadPoolExecutor executor = SpringBeanUtils.getInstance().getBean("shenyuWorkThreadPoolExecutor", ThreadPoolExecutor.class);
+    
     @Override
     public void run() {
         final ShenyuRequestExchange shenyuRequestExchange = getData();
         LOGGER.info("get request...");
-        new Thread(() -> {
-            try {
-                Thread.sleep(6000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+        executor.execute(() -> {
             final ServerWebExchange requestExchangeExchange = shenyuRequestExchange.getExchange();
             requestExchangeExchange.getAttributes().put(RESPONSE_HANDLER_SEND_DISRUPTOR_WATCH,
                     (Consumer<Mono>) shenyuResponseEventPublisher::publishEvent);
             Mono<Void> execute = new ShenyuWebHandler.DefaultShenyuPluginChain(shenyuRequestExchange.getPlugins()).execute(shenyuRequestExchange.getExchange());
             execute.subscribe();
-        }).start();
+        });
     }
     
     public static class ShenyuRequestConsumerExecutorFactory<T extends ShenyuRequestExchange> implements QueueConsumerFactory<T> {

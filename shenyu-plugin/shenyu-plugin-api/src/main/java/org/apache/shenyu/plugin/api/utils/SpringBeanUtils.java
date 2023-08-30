@@ -69,6 +69,18 @@ public final class SpringBeanUtils {
     }
     
     /**
+     * Gets bean by bean name and type.
+     *
+     * @param <T> class
+     * @param beanName bean name
+     * @param type the bean type
+     * @return bean
+     */
+    public <T> T getBean(final String beanName, final Class<T> type) {
+        return applicationContext.getBean(beanName, type);
+    }
+    
+    /**
      * Register bean.
      *
      * @param beanDefinition the bean definition
