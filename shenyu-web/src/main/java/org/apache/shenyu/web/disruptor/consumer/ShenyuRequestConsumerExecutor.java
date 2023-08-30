@@ -18,7 +18,6 @@
 package org.apache.shenyu.web.disruptor.consumer;
 
 import org.apache.commons.logging.Log;
-import org.apache.shenyu.common.constant.Constants;
 import org.apache.shenyu.disruptor.consumer.QueueConsumerExecutor;
 import org.apache.shenyu.disruptor.consumer.QueueConsumerFactory;
 import org.apache.shenyu.web.disruptor.ShenyuResponseEventPublisher;
@@ -27,6 +26,10 @@ import org.apache.shenyu.web.server.ShenyuRequestExchange;
 import org.springframework.http.HttpLogging;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
+
+import java.util.function.Consumer;
+
+import static org.apache.shenyu.common.constant.Constants.RESPONSE_HANDLER_SEND_DISRUPTOR_WATCH;
 
 public class ShenyuRequestConsumerExecutor<T extends ShenyuRequestExchange> extends QueueConsumerExecutor<T> {
     
@@ -44,12 +47,11 @@ public class ShenyuRequestConsumerExecutor<T extends ShenyuRequestExchange> exte
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
+            final ServerWebExchange requestExchangeExchange = shenyuRequestExchange.getExchange();
+            requestExchangeExchange.getAttributes().put(RESPONSE_HANDLER_SEND_DISRUPTOR_WATCH,
+                    (Consumer<Mono>) shenyuResponseEventPublisher::publishEvent);
             Mono<Void> execute = new ShenyuWebHandler.DefaultShenyuPluginChain(shenyuRequestExchange.getPlugins()).execute(shenyuRequestExchange.getExchange());
-            execute.doOnSubscribe(s -> {
-                final ServerWebExchange requestExchangeExchange = shenyuRequestExchange.getExchange();
-                final Mono responstWriteWithMono = requestExchangeExchange.getAttribute(Constants.RESPONSE_HANDLER_SEND_DISRUPTOR_MONO);
-                shenyuResponseEventPublisher.publishEvent(responstWriteWithMono);
-            }).subscribe();
+            execute.subscribe();
         }).start();
     }
     

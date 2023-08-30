@@ -20,7 +20,6 @@ package org.apache.shenyu.web.handler;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shenyu.common.config.ShenyuConfig;
-import org.apache.shenyu.common.constant.Constants;
 import org.apache.shenyu.common.dto.PluginData;
 import org.apache.shenyu.common.enums.PluginHandlerEventEnum;
 import org.apache.shenyu.plugin.api.ShenyuPlugin;
@@ -106,8 +105,7 @@ public final class ShenyuWebHandler implements WebHandler, ApplicationListener<P
      */
     @Override
     public Mono<Void> handle(@NonNull final ServerWebExchange exchange) {
-        if (Objects.nonNull(shenyuConfig.getShenyuWorkThreadPool()) && shenyuConfig.getShenyuWorkThreadPool().getEnabled()) {
-            exchange.getAttributes().put(Constants.RESPONSE_HANDLER_SEND_DISRUPTOR_BOOL, true);
+        if (!Objects.isNull(shenyuConfig.getShenyuWorkThreadPool()) && shenyuConfig.getShenyuWorkThreadPool().getEnabled()) {
             shenyuRequestEventPublisher.publishEvent(new ShenyuRequestExchange(exchange, plugins));
             return Mono.never();
         }

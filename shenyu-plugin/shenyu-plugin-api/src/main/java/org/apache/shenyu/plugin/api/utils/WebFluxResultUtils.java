@@ -31,6 +31,7 @@ import reactor.core.publisher.Mono;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 /**
  * The type Shenyu result utils.
@@ -53,12 +54,13 @@ public final class WebFluxResultUtils {
      * @return the result
      */
     public static Mono<Void> result(final ServerWebExchange exchange, final Object result) {
-        final Boolean responseWriteWithMonoBool = exchange.getAttribute(Constants.RESPONSE_HANDLER_SEND_DISRUPTOR_BOOL);
-        if (!Objects.isNull(responseWriteWithMonoBool) && responseWriteWithMonoBool) {
-            // add mono attribute. Used at `ShenyuHttpWebHandlerAdapter#sendResponse` location
-            exchange.getAttributes().put(Constants.RESPONSE_HANDLER_SEND_DISRUPTOR_MONO,
-                    result0(exchange, result).then(Mono.defer(exchange.getResponse()::setComplete)));
-            return Mono.empty();
+        final Consumer<Mono> responseWriteWithMonoBool = exchange.getAttribute(Constants.RESPONSE_HANDLER_SEND_DISRUPTOR_WATCH);
+        if (!Objects.isNull(responseWriteWithMonoBool)) {
+            return Mono.defer(() -> {
+                // accept. Used at `ShenyuRequestConsumerExecutor#run` location
+                responseWriteWithMonoBool.accept(result0(exchange, result).then(Mono.defer(exchange.getResponse()::setComplete)));
+                return Mono.empty();
+            });
         }
         return result0(exchange, result);
     }
