@@ -106,7 +106,7 @@ public final class ShenyuWebHandler implements WebHandler, ApplicationListener<P
      */
     @Override
     public Mono<Void> handle(@NonNull final ServerWebExchange exchange) {
-        if (!Objects.isNull(shenyuConfig.getShenyuWorkThreadPool()) && shenyuConfig.getShenyuWorkThreadPool().getEnabled()) {
+        if (Objects.nonNull(shenyuConfig.getShenyuWorkThreadPool()) && shenyuConfig.getShenyuWorkThreadPool().getEnabled()) {
             exchange.getAttributes().put(Constants.RESPONSE_HANDLER_SEND_DISRUPTOR_BOOL, true);
             shenyuRequestEventPublisher.publishEvent(new ShenyuRequestExchange(exchange, plugins));
             return Mono.never();

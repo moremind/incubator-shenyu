@@ -39,11 +39,6 @@ public class ShenyuRequestConsumerExecutor<T extends ShenyuRequestExchange> exte
         final ShenyuRequestExchange shenyuRequestExchange = getData();
         LOGGER.info("get request...");
         new Thread(() -> {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
             Mono<Void> execute = new ShenyuWebHandler.DefaultShenyuPluginChain(shenyuRequestExchange.getPlugins()).execute(shenyuRequestExchange.getExchange());
             execute.doOnSubscribe(s -> {
                 final ServerWebExchange requestExchangeExchange = shenyuRequestExchange.getExchange();

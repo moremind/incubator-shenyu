@@ -23,6 +23,8 @@ import org.apache.shenyu.disruptor.consumer.QueueConsumerFactory;
 import org.springframework.http.HttpLogging;
 import reactor.core.publisher.Mono;
 
+import java.util.Objects;
+
 public class ShenyuResponseConsumerExecutor<T extends Mono> extends QueueConsumerExecutor<T> {
 
     private static final Log LOGGER = HttpLogging.forLogName(ShenyuResponseConsumerExecutor.class);
@@ -31,7 +33,10 @@ public class ShenyuResponseConsumerExecutor<T extends Mono> extends QueueConsume
     public void run() {
         LOGGER.info("send response...");
         // consumer response Mono
-        getData().subscribe();
+        if (Objects.nonNull(getData())) {
+            getData().subscribe();
+        }
+        //getData().subscribe();
     }
     
     public static class ShenyuResponseConsumerExecutorFactory<T extends Mono> implements QueueConsumerFactory<T> {
