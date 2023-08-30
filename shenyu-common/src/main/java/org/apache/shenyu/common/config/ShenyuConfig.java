@@ -381,7 +381,7 @@ public class ShenyuConfig {
      *
      * @return the shenyu work thread pool config
      */
-    public ShenyuWorkThreadPoolConfig getShenyuWorkThreadPool() {
+    public ShenyuWorkThreadPoolConfig getWorkThreadPool() {
         return workThreadPool;
     }
     
@@ -390,7 +390,7 @@ public class ShenyuConfig {
      *
      * @param workThreadPool the shenyu work thread pool config
      */
-    public void setShenyuWorkThreadPool(final ShenyuWorkThreadPoolConfig workThreadPool) {
+    public void setWorkThreadPool(final ShenyuWorkThreadPoolConfig workThreadPool) {
         this.workThreadPool = workThreadPool;
     }
     

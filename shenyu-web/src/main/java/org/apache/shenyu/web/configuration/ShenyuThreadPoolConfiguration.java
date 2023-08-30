@@ -129,7 +129,7 @@ public class ShenyuThreadPoolConfiguration {
     @Bean("shenyuWorkThreadPoolExecutor")
     @ConditionalOnProperty(name = "shenyu.work-pool.enable", havingValue = "true", matchIfMissing = true)
     public ThreadPoolExecutor shenyuWorkThreadPoolExecutor(final ShenyuConfig shenyuConfig) {
-        ShenyuWorkThreadPoolConfig workThreadPoolConfig = shenyuConfig.getShenyuWorkThreadPool();
+        ShenyuWorkThreadPoolConfig workThreadPoolConfig = shenyuConfig.getWorkThreadPool();
         return new ThreadPoolExecutor(workThreadPoolConfig.getCoreThreadSize(), workThreadPoolConfig.getMaxThreadSize(),
                 workThreadPoolConfig.getKeepAliveTime(), TimeUnit.MILLISECONDS,
                 new SynchronousQueue<>(), ShenyuThreadFactory.create(workThreadPoolConfig.getThreadNamePrefix(), true),
