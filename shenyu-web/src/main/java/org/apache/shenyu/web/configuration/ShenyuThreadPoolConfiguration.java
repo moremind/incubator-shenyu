@@ -24,6 +24,7 @@ import org.apache.shenyu.common.concurrent.ShenyuThreadFactory;
 import org.apache.shenyu.common.concurrent.ShenyuThreadPoolExecutor;
 import org.apache.shenyu.common.concurrent.TaskQueue;
 import org.apache.shenyu.common.config.ShenyuConfig;
+import org.apache.shenyu.common.config.ShenyuWorkThreadPoolConfig;
 import org.apache.shenyu.common.constant.Constants;
 import org.apache.shenyu.common.exception.ShenyuException;
 import org.apache.shenyu.plugin.api.utils.SpringBeanUtils;
@@ -38,6 +39,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.ContextClosedEvent;
 
 import java.lang.instrument.Instrumentation;
+import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -116,6 +118,22 @@ public class ShenyuThreadPoolConfiguration {
     @ConditionalOnBean(ShenyuThreadPoolExecutor.class)
     public ShenyuThreadPoolExecutorDestructor shenyuThreadPoolExecutorDestructor() {
         return new ShenyuThreadPoolExecutorDestructor();
+    }
+    
+    /**
+     * shenyu work thread pool executor.
+     *
+     * @param shenyuConfig shenyu config
+     * @return the thread pool executor
+     */
+    @Bean("shenyuWorkThreadPoolExecutor")
+    @ConditionalOnProperty(name = "shenyu.work-pool.enable", havingValue = "true", matchIfMissing = true)
+    public ThreadPoolExecutor shenyuWorkThreadPoolExecutor(final ShenyuConfig shenyuConfig) {
+        ShenyuWorkThreadPoolConfig workThreadPoolConfig = shenyuConfig.getShenyuWorkThreadPool();
+        return new ThreadPoolExecutor(workThreadPoolConfig.getCoreThreadSize(), workThreadPoolConfig.getMaxThreadSize(),
+                workThreadPoolConfig.getKeepAliveTime(), TimeUnit.MILLISECONDS,
+                new SynchronousQueue<>(), ShenyuThreadFactory.create(workThreadPoolConfig.getThreadNamePrefix(), true),
+                new ThreadPoolExecutor.CallerRunsPolicy());
     }
 
     /**

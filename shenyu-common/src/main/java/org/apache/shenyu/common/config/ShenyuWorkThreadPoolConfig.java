@@ -36,15 +36,15 @@ public class ShenyuWorkThreadPoolConfig {
      */
     private Boolean enabled = Boolean.TRUE;
     
-    private Integer coreThreadSize = Runtime.getRuntime().availableProcessors() << 1;
+    private Integer coreThreadSize = Math.max(Runtime.getRuntime().availableProcessors() << 1, 8);
     
-    private Integer maxThreadSize = Runtime.getRuntime().availableProcessors() << 1;
+    private Integer maxThreadSize = Math.max(Runtime.getRuntime().availableProcessors() << 1, 8);
     
     private Integer queueSize = 1000;
     
-    private Integer keepAliveTime = 60;
+    private Long keepAliveTime = 60000L;
     
-    private String threadNamePrefix = "shenyu-work-thread";
+    private String threadNamePrefix = "shenyu-work";
     
     /**
      * Get sheneyu work thread pool enabled.
@@ -123,7 +123,7 @@ public class ShenyuWorkThreadPoolConfig {
      *
      * @return keep alive time
      */
-    public Integer getKeepAliveTime() {
+    public Long getKeepAliveTime() {
         return keepAliveTime;
     }
     
@@ -132,8 +132,25 @@ public class ShenyuWorkThreadPoolConfig {
      *
      * @param keepAliveTime keep alive time
      */
-    public void setKeepAliveTime(final Integer keepAliveTime) {
+    public void setKeepAliveTime(final Long keepAliveTime) {
         this.keepAliveTime = keepAliveTime;
     }
     
+    /**
+     * the thread prefix.
+     *
+     * @return the prefix name
+     */
+    public String getThreadNamePrefix() {
+        return threadNamePrefix;
+    }
+    
+    /**
+     * set the thread prefix.
+     *
+     * @param threadNamePrefix prefix name
+     */
+    public void setThreadNamePrefix(final String threadNamePrefix) {
+        this.threadNamePrefix = threadNamePrefix;
+    }
 }
