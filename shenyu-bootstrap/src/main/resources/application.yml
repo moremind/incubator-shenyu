@@ -80,6 +80,10 @@ management:
 
 
 shenyu:
+  workThreadPool:
+    coreThreadSize: 16
+    maxThreadSize: 128
+    queueSize: 1024
   selectorMatchCache:
     ## selector L1 cache
     cache:
