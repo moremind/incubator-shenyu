@@ -39,6 +39,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.ContextClosedEvent;
 
 import java.lang.instrument.Instrumentation;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -132,7 +133,7 @@ public class ShenyuThreadPoolConfiguration {
         ShenyuWorkThreadPoolConfig workThreadPoolConfig = shenyuConfig.getWorkThreadPool();
         return new ThreadPoolExecutor(workThreadPoolConfig.getCoreThreadSize(), workThreadPoolConfig.getMaxThreadSize(),
                 workThreadPoolConfig.getKeepAliveTime(), TimeUnit.MILLISECONDS,
-                new SynchronousQueue<>(), ShenyuThreadFactory.create(workThreadPoolConfig.getThreadNamePrefix(), true),
+                new ArrayBlockingQueue<>(workThreadPoolConfig.getQueueSize()), ShenyuThreadFactory.create(workThreadPoolConfig.getThreadNamePrefix(), true),
                 new ThreadPoolExecutor.CallerRunsPolicy());
     }
 
