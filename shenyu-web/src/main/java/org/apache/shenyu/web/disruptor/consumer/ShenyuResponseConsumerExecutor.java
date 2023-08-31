@@ -48,7 +48,7 @@ public class ShenyuResponseConsumerExecutor<T extends Mono> extends QueueConsume
     
         @Override
         public String fixName() {
-            return "shenyu_response";
+            return "thread-response";
         }
     }
 }

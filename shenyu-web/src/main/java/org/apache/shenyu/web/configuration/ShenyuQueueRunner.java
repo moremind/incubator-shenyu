@@ -19,14 +19,15 @@ package org.apache.shenyu.web.configuration;
 
 import org.apache.shenyu.web.disruptor.ShenyuRequestEventPublisher;
 import org.apache.shenyu.web.disruptor.ShenyuResponseEventPublisher;
-import org.springframework.boot.ApplicationArguments;
-import org.springframework.boot.ApplicationRunner;
+import org.springframework.boot.web.reactive.context.ReactiveWebServerInitializedEvent;
+import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ShenyuQueueRunner implements ApplicationRunner {
+public class ShenyuQueueRunner implements ApplicationListener<ReactiveWebServerInitializedEvent> {
+
     @Override
-    public void run(final ApplicationArguments args) throws Exception {
+    public void onApplicationEvent(final ReactiveWebServerInitializedEvent event) {
         ShenyuRequestEventPublisher.getInstance().start(new ShenyuDisruptorConfig());
         ShenyuResponseEventPublisher.getInstance().start(new ShenyuDisruptorConfig());
     }

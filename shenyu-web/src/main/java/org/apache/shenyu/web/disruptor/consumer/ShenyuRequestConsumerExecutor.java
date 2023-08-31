@@ -63,7 +63,7 @@ public class ShenyuRequestConsumerExecutor<T extends ShenyuRequestExchange> exte
     
         @Override
         public String fixName() {
-            return "shenyu_request";
+            return "thread-request";
         }
     }
 }

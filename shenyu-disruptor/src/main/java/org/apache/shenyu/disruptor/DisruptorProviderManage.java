@@ -51,6 +51,8 @@ public class DisruptorProviderManage<T> {
     private final Integer size;
     
     private final Integer consumerSize;
+
+    private final ProducerType producerType;
     
     private final QueueConsumerFactory<T> consumerFactory;
     
@@ -90,6 +92,25 @@ public class DisruptorProviderManage<T> {
         this.consumerFactory = consumerFactory;
         this.size = ringBufferSize;
         this.consumerSize = consumerSize;
+        this.producerType = ProducerType.MULTI;
+    }
+
+    /**
+     * Instantiates a new Disruptor provider manage.
+     *
+     * @param consumerFactory the consumer factory
+     * @param consumerSize    the consumer size
+     * @param ringBufferSize  the ringBuffer size
+     * @param producerType  the producerType
+     */
+    public DisruptorProviderManage(final QueueConsumerFactory<T> consumerFactory,
+                                   final int consumerSize,
+                                   final int ringBufferSize,
+                                   final ProducerType producerType) {
+        this.consumerFactory = consumerFactory;
+        this.size = ringBufferSize;
+        this.consumerSize = consumerSize;
+        this.producerType = producerType;
     }
     
     /**
@@ -107,7 +128,7 @@ public class DisruptorProviderManage<T> {
     public void startup(final boolean isOrderly) {
         OrderlyExecutor executor = new OrderlyExecutor(isOrderly, consumerSize, consumerSize, 0, TimeUnit.MILLISECONDS,
                 new LinkedBlockingQueue<>(),
-                DisruptorThreadFactory.create("consumer", false), new ThreadPoolExecutor.AbortPolicy());
+                DisruptorThreadFactory.create("consumer-" + consumerFactory.fixName(), false), new ThreadPoolExecutor.AbortPolicy());
         int newConsumerSize = this.consumerSize;
         EventFactory<DataEvent<T>> eventFactory;
         if (isOrderly) {
@@ -119,7 +140,7 @@ public class DisruptorProviderManage<T> {
         Disruptor<DataEvent<T>> disruptor = new Disruptor<>(eventFactory,
                 size,
                 DisruptorThreadFactory.create("provider-" + consumerFactory.fixName(), false),
-                ProducerType.MULTI,
+                this.producerType,
                 new BlockingWaitStrategy());
         @SuppressWarnings("all")
         QueueConsumer<T>[] consumers = new QueueConsumer[newConsumerSize];
