@@ -23,7 +23,7 @@ package org.apache.shenyu.common.timer;
  */
 public class WheelTimerFactory {
     
-    private static final String NAME = "shared_wheel_timer";
+    private static final String NAME = "shared-wheel-timer";
     
     private static final TimerSharedRef SHARED_TIMER = new TimerSharedRef();
     

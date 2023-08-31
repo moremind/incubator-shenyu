@@ -107,7 +107,7 @@ public class DisruptorProviderManage<T> {
     public void startup(final boolean isOrderly) {
         OrderlyExecutor executor = new OrderlyExecutor(isOrderly, consumerSize, consumerSize, 0, TimeUnit.MILLISECONDS,
                 new LinkedBlockingQueue<>(),
-                DisruptorThreadFactory.create("shenyu_disruptor_consumer_", false), new ThreadPoolExecutor.AbortPolicy());
+                DisruptorThreadFactory.create("consumer", false), new ThreadPoolExecutor.AbortPolicy());
         int newConsumerSize = this.consumerSize;
         EventFactory<DataEvent<T>> eventFactory;
         if (isOrderly) {
@@ -118,7 +118,7 @@ public class DisruptorProviderManage<T> {
         }
         Disruptor<DataEvent<T>> disruptor = new Disruptor<>(eventFactory,
                 size,
-                DisruptorThreadFactory.create("shenyu_disruptor_provider_" + consumerFactory.fixName(), false),
+                DisruptorThreadFactory.create("provider-" + consumerFactory.fixName(), false),
                 ProducerType.SINGLE,
                 new BlockingWaitStrategy());
         @SuppressWarnings("all")
