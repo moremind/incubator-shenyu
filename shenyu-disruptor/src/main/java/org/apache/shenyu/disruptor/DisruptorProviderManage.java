@@ -119,7 +119,7 @@ public class DisruptorProviderManage<T> {
         Disruptor<DataEvent<T>> disruptor = new Disruptor<>(eventFactory,
                 size,
                 DisruptorThreadFactory.create("provider-" + consumerFactory.fixName(), false),
-                ProducerType.SINGLE,
+                ProducerType.MULTI,
                 new BlockingWaitStrategy());
         @SuppressWarnings("all")
         QueueConsumer<T>[] consumers = new QueueConsumer[newConsumerSize];
