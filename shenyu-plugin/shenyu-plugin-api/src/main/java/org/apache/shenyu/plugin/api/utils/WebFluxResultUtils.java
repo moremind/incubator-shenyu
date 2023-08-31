@@ -54,11 +54,11 @@ public final class WebFluxResultUtils {
      * @return the result
      */
     public static Mono<Void> result(final ServerWebExchange exchange, final Object result) {
-        final Consumer<Mono> responseWriteWithMonoBool = exchange.getAttribute(Constants.RESPONSE_HANDLER_SEND_DISRUPTOR_WATCH);
-        if (!Objects.isNull(responseWriteWithMonoBool)) {
+        final Consumer<Mono<Void>> responseHandlerSendDisruptorWatch = exchange.getAttribute(Constants.RESPONSE_HANDLER_SEND_DISRUPTOR_WATCH);
+        if (!Objects.isNull(responseHandlerSendDisruptorWatch)) {
             return Mono.defer(() -> {
                 // accept. Used at `ShenyuRequestConsumerExecutor#run` location
-                responseWriteWithMonoBool.accept(result0(exchange, result).then(Mono.defer(exchange.getResponse()::setComplete)));
+                responseHandlerSendDisruptorWatch.accept(result0(exchange, result).then(Mono.defer(exchange.getResponse()::setComplete)));
                 return Mono.empty();
             });
         }

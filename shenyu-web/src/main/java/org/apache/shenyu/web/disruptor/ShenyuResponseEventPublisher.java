@@ -18,7 +18,6 @@
 package org.apache.shenyu.web.disruptor;
 
 import org.apache.shenyu.disruptor.DisruptorProviderManage;
-import org.apache.shenyu.disruptor.provider.DisruptorProvider;
 import org.apache.shenyu.web.configuration.ShenyuDisruptorConfig;
 import org.apache.shenyu.web.disruptor.consumer.ShenyuResponseConsumerExecutor;
 import reactor.core.publisher.Mono;
@@ -56,7 +55,6 @@ public class ShenyuResponseEventPublisher {
      * @param responseMono the data
      */
     public void publishEvent(final Mono responseMono) {
-        DisruptorProvider<Mono> provider = providerManage.getProvider();
-        provider.onData(responseMono);
+        providerManage.getProvider().onData(responseMono);
     }
 }

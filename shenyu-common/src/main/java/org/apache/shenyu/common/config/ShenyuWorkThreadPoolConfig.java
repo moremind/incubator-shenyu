@@ -44,7 +44,7 @@ public class ShenyuWorkThreadPoolConfig {
     
     private Long keepAliveTime = 60000L;
     
-    private String threadNamePrefix = "shenyu-work";
+    private String threadNamePrefix = "shenyu-plugin-work";
     
     /**
      * Get sheneyu work thread pool enabled.

@@ -40,7 +40,7 @@ public class ShenyuRequestConsumerExecutor<T extends ShenyuRequestExchange> exte
     private final ShenyuResponseEventPublisher shenyuResponseEventPublisher = ShenyuResponseEventPublisher.getInstance();
     
     private final ThreadPoolExecutor executor = SpringBeanUtils.getInstance().getBean("shenyuWorkThreadPoolExecutor", ThreadPoolExecutor.class);
-    
+
     @Override
     public void run() {
         final ShenyuRequestExchange shenyuRequestExchange = getData();
@@ -48,7 +48,7 @@ public class ShenyuRequestConsumerExecutor<T extends ShenyuRequestExchange> exte
         executor.execute(() -> {
             final ServerWebExchange requestExchangeExchange = shenyuRequestExchange.getExchange();
             requestExchangeExchange.getAttributes().put(RESPONSE_HANDLER_SEND_DISRUPTOR_WATCH,
-                    (Consumer<Mono>) shenyuResponseEventPublisher::publishEvent);
+                    (Consumer<Mono<Void>>) shenyuResponseEventPublisher::publishEvent);
             Mono<Void> execute = new ShenyuWebHandler.DefaultShenyuPluginChain(shenyuRequestExchange.getPlugins()).execute(shenyuRequestExchange.getExchange());
             execute.subscribe();
         });
