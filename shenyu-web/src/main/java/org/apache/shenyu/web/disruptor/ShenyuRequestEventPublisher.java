@@ -17,9 +17,9 @@
 
 package org.apache.shenyu.web.disruptor;
 
+import org.apache.shenyu.common.config.ShenyuWorkThreadPoolConfig;
 import org.apache.shenyu.disruptor.DisruptorProviderManage;
 import org.apache.shenyu.disruptor.provider.DisruptorProvider;
-import org.apache.shenyu.web.configuration.ShenyuDisruptorConfig;
 import org.apache.shenyu.web.disruptor.consumer.ShenyuRequestConsumerExecutor.ShenyuRequestConsumerExecutorFactory;
 import org.apache.shenyu.web.server.ShenyuRequestExchange;
 
@@ -44,7 +44,7 @@ public class ShenyuRequestEventPublisher {
      *
      * @param shenyuDisruptorConfig config
      */
-    public void start(final ShenyuDisruptorConfig shenyuDisruptorConfig) {
+    public void start(final ShenyuWorkThreadPoolConfig.ShenyuDisruptorConfig shenyuDisruptorConfig) {
         ShenyuRequestConsumerExecutorFactory<ShenyuRequestExchange> factory = new ShenyuRequestConsumerExecutorFactory<>();
         providerManage = new DisruptorProviderManage<>(factory, shenyuDisruptorConfig.getThreadSize(), shenyuDisruptorConfig.getBufferSize());
         providerManage.startup();

@@ -40,7 +40,6 @@ import org.springframework.context.event.ContextClosedEvent;
 
 import java.lang.instrument.Instrumentation;
 import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 

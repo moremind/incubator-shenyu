@@ -45,7 +45,11 @@ public class ShenyuWorkThreadPoolConfig {
     private Long keepAliveTime = 60000L;
     
     private String threadNamePrefix = "plugin-work";
-    
+
+    private ShenyuDisruptorConfig requestDisruptorConfig = new ShenyuDisruptorConfig();
+
+    private ShenyuDisruptorConfig responseDisruptorConfig = new ShenyuDisruptorConfig();
+
     /**
      * Get sheneyu work thread pool enabled.
      *
@@ -152,5 +156,84 @@ public class ShenyuWorkThreadPoolConfig {
      */
     public void setThreadNamePrefix(final String threadNamePrefix) {
         this.threadNamePrefix = threadNamePrefix;
+    }
+
+    /**
+     * requestDisruptorConfig.
+     *
+     * @return RequestDisruptorConfig
+     */
+    public ShenyuDisruptorConfig getRequestDisruptorConfig() {
+        return requestDisruptorConfig;
+    }
+
+    /**
+     * responseDisruptorConfig.
+     *
+     * @return ResponseDisruptorConfig
+     */
+    public ShenyuDisruptorConfig getResponseDisruptorConfig() {
+        return responseDisruptorConfig;
+    }
+
+    /**
+     * set requestDisruptorConfig.
+     *
+     * @param requestDisruptorConfig requestDisruptorConfig
+     */
+    public void setRequestDisruptorConfig(final ShenyuDisruptorConfig requestDisruptorConfig) {
+        this.requestDisruptorConfig = requestDisruptorConfig;
+    }
+
+    /**
+     * set responseDisruptorConfig.
+     *
+     * @param responseDisruptorConfig responseDisruptorConfig
+     */
+    public void setResponseDisruptorConfig(final ShenyuDisruptorConfig responseDisruptorConfig) {
+        this.responseDisruptorConfig = responseDisruptorConfig;
+    }
+
+    /**
+     * ShenyuDisruptorConfig.
+     */
+    public static class ShenyuDisruptorConfig {
+
+        private Integer bufferSize = 1024;
+
+        private Integer threadSize = Math.max(Runtime.getRuntime().availableProcessors() << 1, 8);
+
+        /**
+         * get bufferSize.
+         *
+         * @return bufferSize
+         */
+        public Integer getBufferSize() {
+            return bufferSize;
+        }
+
+        /**
+         * set bufferSize.
+         * @param bufferSize bufferSize
+         */
+        public void setBufferSize(final Integer bufferSize) {
+            this.bufferSize = bufferSize;
+        }
+
+        /**
+         * get threadSize.
+         * @return  threadSize
+         */
+        public Integer getThreadSize() {
+            return threadSize;
+        }
+
+        /**
+         * set threadSize.
+         * @param threadSize threadSize
+         */
+        public void setThreadSize(final Integer threadSize) {
+            this.threadSize = threadSize;
+        }
     }
 }

@@ -17,8 +17,10 @@
 
 package org.apache.shenyu.web.configuration;
 
+import org.apache.shenyu.common.config.ShenyuConfig;
 import org.apache.shenyu.web.disruptor.ShenyuRequestEventPublisher;
 import org.apache.shenyu.web.disruptor.ShenyuResponseEventPublisher;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.reactive.context.ReactiveWebServerInitializedEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
@@ -26,9 +28,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class ShenyuQueueRunner implements ApplicationListener<ReactiveWebServerInitializedEvent> {
 
+    @Autowired
+    private ShenyuConfig shenyuConfig;
+
     @Override
     public void onApplicationEvent(final ReactiveWebServerInitializedEvent event) {
-        ShenyuRequestEventPublisher.getInstance().start(new ShenyuDisruptorConfig());
-        ShenyuResponseEventPublisher.getInstance().start(new ShenyuDisruptorConfig());
+        ShenyuRequestEventPublisher.getInstance().start(shenyuConfig.getWorkThreadPool().getRequestDisruptorConfig());
+        ShenyuResponseEventPublisher.getInstance().start(shenyuConfig.getWorkThreadPool().getResponseDisruptorConfig());
     }
 }

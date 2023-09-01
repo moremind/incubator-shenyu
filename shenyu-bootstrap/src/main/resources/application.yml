@@ -81,9 +81,16 @@ management:
 
 shenyu:
   workThreadPool:
-    coreThreadSize: 16
-    maxThreadSize: 128
+    enabled: true
+    coreThreadSize: 8
+    maxThreadSize: 8
     queueSize: 1024
+    requestDisruptorConfig:
+      threadSize: 9
+      bufferSize: 1024
+    responseDisruptorConfig:
+      threadSize: 9
+      bufferSize: 1024
   selectorMatchCache:
     ## selector L1 cache
     cache:
@@ -106,8 +113,6 @@ shenyu:
       enabled: false
       cacheSize: 1024 # the number of selectors
       matchMode: antPathMatch
-  shenyuWorkThreadPool:
-    enable: true
   netty:
     http:
       # set to false, user can custom the netty tcp server config.
